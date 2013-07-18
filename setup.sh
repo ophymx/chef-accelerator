@@ -60,6 +60,7 @@ function install_prereqs() {
 function main() {
   if [[ $(id -u) != 0 ]]; then
     with_priv sudo $0 "$@"
+    exit
   fi
 
   install_chef
