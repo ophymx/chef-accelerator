@@ -1,0 +1,29 @@
+{
+  "sources": {
+    "apt": {
+      "locked_version": "2.0.0"
+    },
+    "ophymx-workstation": {
+      "path": "../ophymx-workstation"
+    },
+    "ruby_build": {
+      "locked_version": "0.8.0",
+      "git": "git://github.com/fnichol/chef-ruby_build.git",
+      "ref": "ed2d3841784ecf60c1de808946307b588efe644f"
+    },
+    "rbenv": {
+      "locked_version": "0.7.2",
+      "git": "git://github.com/fnichol/chef-rbenv.git",
+      "ref": "f2b53292e810dd2b43f6121f9958f5f29979dcb1"
+    },
+    "java": {
+      "locked_version": "1.12.0"
+    },
+    "windows": {
+      "locked_version": "1.10.0"
+    },
+    "chef_handler": {
+      "locked_version": "1.1.4"
+    }
+  }
+}
