@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -12,7 +12,7 @@ function magenta() {
 
 function drop_priv() {
   green "$*"
-  sudo PATH=$PATH -u "$SUDO_USER" -s "$@"
+  sudo "PATH=$PATH" -u "$SUDO_USER" -s "$@"
 }
 
 function with_priv() {
@@ -43,14 +43,14 @@ function install_chef() {
 
 function install_prereqs() {
   PREREQ_PACKAGES="
-    libxslt-dev
+    libxslt1-dev
     libxml2-dev
     build-essential
     git-core
   "
 
   for package in $PREREQ_PACKAGES; do
-    if ! dpkg -l "$package" >/dev/null 2>&1; then
+    if ! dpkg -s "$package" >/dev/null 2>&1; then
       apt_get_update_once
       with_priv apt-get -qq install "$package"
     fi
@@ -59,14 +59,14 @@ function install_prereqs() {
 
 function main() {
   if [[ $(id -u) != 0 ]]; then
-    with_priv sudo $0 "$@"
+    sudo -p "Chef Accelerator needs to run as root, but will drop privledge for some operations (shown in green)." $0 "$@"
     exit
   fi
 
   install_chef
   install_prereqs
 
-  export PATH=/opt/chef/embedded/bin:$PATH
+  export PATH="/opt/chef/embedded/bin:$PATH"
 
   drop_priv mkdir -p build
   drop_priv bundle install --path .ruby
@@ -76,9 +76,7 @@ function main() {
   with_priv mkdir -pv /etc/chef /var/chef
   with_priv rm -rf /var/chef/{cookbooks,node.json}
   with_priv cp -r  build/{cookbooks,node.json} /var/chef
-
-  magenta   "echo 'cookbooks_path \"/var/chef/cookbooks\"' > /etc/chef/solo.rb"
-            echo 'cookbooks_path "/var/chef/cookbooks"' > /etc/chef/solo.rb
+  with_priv cp solo.rb /etc/chef/solo.rb
 
   with_priv chef-solo -j /var/chef/node.json
 }
